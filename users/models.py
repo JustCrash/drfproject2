@@ -7,6 +7,7 @@ NULLABLE = {'blank': True, 'null': True}
 
 class User(AbstractUser):
     name = None
+    username = None
     email = models.EmailField(unique=True, verbose_name='почта', help_text='Введите почту')
     phone = models.CharField(max_length=35, verbose_name='телефон', **NULLABLE, help_text='Введите номер телефона')
     avatar = models.ImageField(upload_to='users/avatars', verbose_name='аватар', **NULLABLE, help_text='Вставъте аватарку')
@@ -24,7 +25,7 @@ class User(AbstractUser):
 
 
 class Payment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Пользователь', help_text='Укажите пользователя')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь', help_text='Укажите пользователя')
     payment_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата оплаты', help_text='Укажите дату оплаты')
     payment_course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Оплаченный курс', **NULLABLE)
     payment_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', **NULLABLE)
