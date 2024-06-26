@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from lms.models import Course, Lesson
 
 
 NULLABLE = {'blank': True, 'null': True}
@@ -20,3 +21,19 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'пользователь'
         verbose_name_plural = 'пользователи'
+
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Пользователь', help_text='Укажите пользователя')
+    payment_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата оплаты', help_text='Укажите дату оплаты')
+    payment_course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Оплаченный курс', **NULLABLE)
+    payment_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', **NULLABLE)
+    payment_sum = models.FloatField(verbose_name='Сумма платежа')
+    payment_method = models.CharField(max_length=50, verbose_name='Способ оплаты')
+
+    def __str__(self):
+        return f'{self.user}: {self.payment_lesson if self.payment_lesson else self.payment_course} - {self.payment_sum}'
+
+    class Meta:
+        verbose_name = 'платеж'
+        verbose_name_plural = 'платежи'
