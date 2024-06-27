@@ -30,7 +30,8 @@ class Payment(models.Model):
     payment_course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Оплаченный курс', **NULLABLE)
     payment_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', **NULLABLE)
     payment_sum = models.FloatField(verbose_name='Сумма платежа')
-    payment_method = models.CharField(max_length=50, verbose_name='Способ оплаты')
+    choices_method = {'Наличными': 'Наличными', 'Без наличный': 'Без наличный'}
+    payment_method = models.CharField(max_length=50, verbose_name='Способ оплаты', choices=choices_method)
 
     def __str__(self):
         return f'{self.user}: {self.payment_lesson if self.payment_lesson else self.payment_course} - {self.payment_sum}'
