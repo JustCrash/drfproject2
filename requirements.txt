@@ -8,3 +8,5 @@ black==24.4.2
 ipython==8.25.0
 django-filter==24.2
 coverage==7.5.4
+drf-yasg==1.21.7
+setuptools==70.2.0
