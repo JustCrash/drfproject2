@@ -1,9 +1,11 @@
 from rest_framework import viewsets
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from lms.models import Course, Lesson
-from lms.serializers import CourseSerializer, LessonSerializer
+from lms.models import Course, Lesson, Subscription
+from lms.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
 from users.permissions import IsModerator, IsOwner
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -68,3 +70,21 @@ class LessonUpdateAPIView(UpdateAPIView):
 class LessonDestroyAPIView(DestroyAPIView):
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated, ~IsModerator | IsOwner]
+
+
+class SubscriptionCreateAPIView(CreateAPIView):
+    serializer_class = SubscriptionSerializer
+
+    def post(self, *args, **kwargs):
+        user = self.request.user
+        course_id = self.request.data.get('course')
+        course_item = get_object_or_404(Course, pk=course_id)
+
+        subscription, created = Subscription.objects.get_or_create(user=user, course=course_item)
+        if not created:
+            subscription.delete()
+            massage = 'Подписка удалена'
+        else:
+            massage = 'Подписка создана'
+
+        return Response({'massage': massage})
