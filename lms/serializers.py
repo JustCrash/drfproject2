@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
-from lms.models import Course, Lesson
+from lms.models import Course, Lesson, Subscription
 from lms.validators import LinkValidator
 
 
@@ -23,3 +23,9 @@ class CourseSerializer(ModelSerializer):
         if object.lesson_set.count():
             return object.lesson_set.count()
         return 0
+
+
+class SubscriptionSerializer(ModelSerializer):
+    class Meta:
+        model = Subscription
+        fields = '__all__'
