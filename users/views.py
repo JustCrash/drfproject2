@@ -8,6 +8,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from users.serializers import UserSerializer, PaymentSerializer
 from users.models import User, Payment
+from users.services import create_stripe_price, create_stripe_product, create_stripe_session
 from lms.models import Course, Lesson
 
 class UserViewSet(ModelViewSet):
@@ -54,12 +55,12 @@ class PaymentCreateAPIView(CreateAPIView):
 
         if course_id:
             course_product = create_stripe_product(Course.objects.get(pk=course_id).title)
-            course_price = create_stripe_price(instance.course.amount, course_product)
-            session_id, payment_link = create_stipe_session(course_price, instance.pk)
+            course_price = create_stripe_price(instance.payment_course.amount, course_product)
+            session_id, payment_link = create_stripe_session(course_price)
         else:
             lesson_product = create_stripe_product(Lesson.objects.get(pk=lesson_id).title)
-            lesson_price = create_stripe_price(instance.lesson.amount, lesson_product)
-            session_id, payment_link = create_stipe_session(lesson_price, instance.pk)
+            lesson_price = create_stripe_price(instance.payment_lesson.amount, lesson_product)
+            session_id, payment_link = create_stripe_session(lesson_price)
 
         instance.session_id = session_id
         instance.payment_link = payment_link
