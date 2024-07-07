@@ -8,6 +8,7 @@ def create_stripe_product(name):
     product = stripe.Product.create(name=name)
     return product
 
+
 def create_stripe_price(amount, product):
     price = stripe.Price.create(
         currency='rub',
@@ -16,9 +17,10 @@ def create_stripe_price(amount, product):
     )
     return price
 
+
 def create_stripe_session(price):
     session = stripe.checkout.Session.create(
-        success_url='https://localhost:8000/',
+        success_url='http://localhost:8000/',
         line_items=[{'price': price.get('id'), 'quantity': 1}],
         mode='payment',
     )
