@@ -28,7 +28,6 @@ class Lesson(models.Model):
     owner = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Владелец', **NULLABLE)
     amount = models.PositiveIntegerField(verbose_name='Стоимость урока', **NULLABLE)
 
-
     def __str__(self):
         return self.title
 
