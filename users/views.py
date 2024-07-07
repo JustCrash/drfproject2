@@ -50,8 +50,8 @@ class PaymentCreateAPIView(CreateAPIView):
         instance = serializer.save()
         instance.user = self.request.user
 
-        course_id = self.request.data.get('course')
-        lesson_id = self.request.data.get('lesson')
+        course_id = self.request.data.get('payment_course')
+        lesson_id = self.request.data.get('payment_lesson')
 
         if course_id:
             course_product = create_stripe_product(Course.objects.get(pk=course_id).title)
