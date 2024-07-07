@@ -10,6 +10,9 @@ from users.serializers import UserSerializer, PaymentSerializer
 from users.models import User, Payment
 
 class UserViewSet(ModelViewSet):
+    """
+    ViewSet for User.
+    """
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
@@ -25,6 +28,9 @@ class UserViewSet(ModelViewSet):
 
 
 class PaymentListAPIView(ListAPIView):
+    """
+    Payment list endpoint.
+    """
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
     filter_backends = [DjangoFilterBackend, OrderingFilter]
