@@ -167,7 +167,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 
 CELERY_BEAT_SCHEDULE = {
     'send reminder': {
-        'task': 'lms.tasks.send_email',
+        'task': 'user.tasks.check_last_login',
         'schedule': timedelta(seconds=10),
     },
 }
