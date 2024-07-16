@@ -11,3 +11,8 @@ coverage==7.5.4
 drf-yasg==1.21.7
 setuptools==70.2.0
 stripe==10.2.0
+redis==5.0.7
+celery==5.4.0
+eventlet==0.36.1
+gevent==24.2.1
+django-celery-beat==2.6.0
