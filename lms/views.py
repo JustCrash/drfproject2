@@ -37,11 +37,6 @@ class CourseViewSet(viewsets.ModelViewSet):
             self.permission_classes = [IsAuthenticated, ~IsModerator | IsOwner]
         return super().get_permissions()
 
-    def perform_update(self, serializer):
-        course = serializer.save()
-        send_email.delay(course)
-        course.save()
-
 
 class LessonCreateAPIView(CreateAPIView):
     """
@@ -53,6 +48,7 @@ class LessonCreateAPIView(CreateAPIView):
     def perform_create(self, serializer):
         lesson = serializer.save()
         lesson.owner = self.request.user
+        send_email.delay(lesson.course)
         lesson.save()
 
 
