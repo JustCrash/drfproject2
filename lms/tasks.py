@@ -1,35 +1,27 @@
-import smtplib
-
 from celery import shared_task
 from django.core.mail import send_mail
 
-from lms.models import Course
+from config.settings import EMAIL_HOST_USER
+from lms.models import Subscription
 from users.models import User
-from config import settings
 
 
 @shared_task
-def send_mail_about_updates(pk):
+def send_mail_about_updates(course_id):
     """
-    Отложенная задача. При обновлении курса отправляет
-    письмо пользователю, подписанному на курс.
+    Отправка писем об обновлении курса.
     """
-    instance = Course.objects.filter(pk=pk).first()
-
-    if instance:
-
-        subscribers = instance.subscription_set.filter(cource=cource)
-        subscribers_email = []
-        for subscriber in subscribers:
-            subscribers_email.append(User.objects.get(pk=subscriber.user.pk).email)
-
-        try:
-            send_mail(
-                subject=f'Обновление курса {instance.title}',
-                message=f'Информация курса {instance.title} обновилась, заходи на сайт, чтобы увидеть изменения!',
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=subscribers_email,
-                fail_silently=False
-            )
-        except smtplib.SMTPException as error:
-            raise error
+    subs = Subscription.objects.filter(course=course_id)
+    subscribers_email = []
+    for sub in subs:
+        subscribers_email.append(User.objects.get(pk=sub.user.pk).email)
+        course = sub.course
+        user = sub.user
+        send_mail(
+            subject=f'{course} обновился',
+            message=f'{course} обновился',
+            from_email=EMAIL_HOST_USER,
+            recipient_list=subscribers_email,
+            fail_silently=False
+        )
+        print(f'Письмо отправлено пользователю {user.email}')

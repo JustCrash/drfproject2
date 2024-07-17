@@ -8,6 +8,7 @@ from lms.models import Course, Lesson, Subscription
 from lms.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
 from lms.paginators import LmsPagination
 from users.permissions import IsModerator, IsOwner
+from lms.tasks import send_mail_about_updates
 
 class CourseViewSet(viewsets.ModelViewSet):
     """
@@ -21,6 +22,15 @@ class CourseViewSet(viewsets.ModelViewSet):
         course = serializer.save()
         course.owner = self.request.user
         course.save()
+
+    def perform_update(self, serializer):
+        """
+        Запускает отложенную задачу send_mail_about_updates при обновлении курса.
+        """
+        serializer.save()
+        course = serializer.save()
+        course_id = course.id
+        send_mail_about_updates.delay(course_id)
 
     def get_queryset(self):
         if IsModerator().has_permission(self.request, self):
@@ -48,7 +58,6 @@ class LessonCreateAPIView(CreateAPIView):
     def perform_create(self, serializer):
         lesson = serializer.save()
         lesson.owner = self.request.user
-        send_email.delay(lesson.course)
         lesson.save()
 
 
