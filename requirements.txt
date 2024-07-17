@@ -17,3 +17,4 @@ eventlet==0.36.1
 gevent==24.2.1
 django-celery-beat==2.6.0
 python-dateutil~=2.9.0.post0
+pytz==2024.1
