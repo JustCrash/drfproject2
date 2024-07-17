@@ -1,19 +1,25 @@
-from celery import shared_task
-from django.utils import timezone
-from dateutil.relativedelta import relativedelta
+import pytz
 
-from user.models import User
+from celery import shared_task
+from dateutil.relativedelta import relativedelta
+from datetime import datetime
+
+from users.models import User
+from config import settings
 
 
 @shared_task
 def check_last_login():
-    users = User.objects.all()
-    data_now = timezone.now()
+    """
+    Периодическая задача. Меняет статус пользователей,
+    которые не заходили в учетную запись более месяца на неактивный.
+    """
+    users = User.objects.filter(is_active=True)
+
     for user in users:
-        if user.last_login:
-            if user.last_login < (data_now - relativedelta(months=1)):
-                user.if_active = False
-                user.save()
-            else:
-                user.last_login = data_now
-                user.save()
+        current_date_time = datetime.now(pytz.timezone(settings.TIME_ZONE))
+        user_last_login = user.last_login
+
+        if user_last_login < (current_date_time - relativedelta(months=1)):
+            user.is_active = False
+            user.save()
