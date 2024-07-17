@@ -25,8 +25,8 @@ def send_mail_about_updates(pk):
 
         try:
             send_mail(
-                subject=f'Обновление курса {instance.name}',
-                message=f'Информация курса {instance.name} обновилась, заходи на сайт, чтобы увидеть изменения!',
+                subject=f'Обновление курса {instance.title}',
+                message=f'Информация курса {instance.title} обновилась, заходи на сайт, чтобы увидеть изменения!',
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=subscribers_email,
                 fail_silently=False
